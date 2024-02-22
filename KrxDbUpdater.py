@@ -11,7 +11,7 @@ import time
 from tqdm import tqdm
 from sqlalchemy import create_engine
 from dateutil.relativedelta import relativedelta
-from datetime import date
+from datetime import date, datetime
 
 
 class KrxDbUpdater:
@@ -91,7 +91,7 @@ class KrxDbUpdater:
         
         return bizDay
 
-    def GetKrxTicker(self, bizDay):
+    def UpdateKrxTicker(self, bizDay):
     
         '''*************'''
         ''' Market '''
@@ -202,7 +202,7 @@ class KrxDbUpdater:
         mycursor.executemany(query, args)
         self.con.commit()
         
-    def GetIndustryClass(self, bizDay):
+    def UpdateIndustryClass(self, bizDay):
         
         
         '''*******************************************************'''
@@ -250,7 +250,7 @@ class KrxDbUpdater:
         self.con.commit()
         
         
-    def GetKrxPrice(self, bizDay):
+    def UpdateKrxPrice(self, bizDay):
         
         '''*******************************'''
         ''' Adjusted stock price crawling '''
@@ -278,6 +278,7 @@ class KrxDbUpdater:
         
         errorList = []
         
+        mycursor = self.con.cursor()
         
         ''' Getting All ticker price '''
         
@@ -287,8 +288,8 @@ class KrxDbUpdater:
             ticker = tickerList['TickerCode'][i]
         
             # StartDt and EndDt selection
-            StartDt = (date.today() + relativedelta(years=-5)).strftime("%Y%m%d")
-            EndDt = (date.today()).strftime("%Y%m%d")
+            StartDt = (datetime.strptime(bizDay, '%Y%m%d') + relativedelta(years=-5)).strftime("%Y%m%d")
+            EndDt = bizDay
         
             # If an error occurs, ignore and move on to the next loop
             try:
@@ -320,11 +321,11 @@ class KrxDbUpdater:
             # Delay 2 seconds between loops
             time.sleep(2)
         
-        print('Error occured for these tickers: ', errorList)
+        print(f'\nError occured for these tickers{len(errorList)} ea:\n', errorList)
         
 if __name__ == "__main__":
     DbUpdater = KrxDbUpdater()
     bizDay = DbUpdater.GetRecentBizDay()
-    DbUpdater.GetKrxTicker(bizDay)
-    DbUpdater.GetIndustryClass(bizDay)
-    DbUpdater.GetKrxPrice(bizDay)
+    DbUpdater.UpdateKrxTicker(bizDay)
+    DbUpdater.UpdateIndustryClass(bizDay)
+    DbUpdater.UpdateKrxPrice(bizDay)
