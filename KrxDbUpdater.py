@@ -19,7 +19,7 @@ class KrxDbUpdater:
     def __init__(self):
         
         self.con = pymysql.connect(user = 'root',
-                                  passwd = '141113',
+                                  passwd = '******',
                                   port = 3307,
                                   host = '127.0.0.1',
                                   db = 'KrxStock',
