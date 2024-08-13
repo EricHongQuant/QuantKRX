@@ -189,7 +189,7 @@ class KrxDbUpdater:
         
        
         mycursor = self.con.cursor()
-        query = f"""
+        query = """
             insert into KrxTicker (TickerCode, TickerName, MarketName, Close, MarketCap, DataDt, EPS, ForwardEPS, BPS, DivPerShare, Category)
             values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) as new
             on duplicate key update
@@ -237,7 +237,7 @@ class KrxDbUpdater:
         
         
         mycursor = self.con.cursor()
-        query = f"""
+        query = """
             insert into KrxSector (IdxCode, TickerCode, TickerName, SectorName, Seq, DataDt)
             values (%s,%s,%s,%s,%s,%s) as new
             on duplicate key update

@@ -65,14 +65,17 @@ class KrxDb:
         where Dt >= '{startDt}' and Dt <= '{endDt}'"""
         
         if ticker:
-            query += ' and TickerCode = ticker'
+            if ticker.isnumeric():
+                query += f""" and TickerCode = {ticker}"""
+            else:
+                query += f""" and TickerCode = (select TickerCode 
+                                                from krxticker 
+                                                where TickerName = '{ticker}' 
+                                                order by DataDt desc 
+                                                limit 1)"""
             
         priceDf = pd.read_sql(query, con = self.engine)
         
         return priceDf
-
-
-
-
 
         
